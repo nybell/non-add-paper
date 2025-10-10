@@ -1,0 +1,221 @@
+#!/bin/bash
+#SBATCH --partition=rome
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=64
+#SBATCH --time=4:00:00
+
+# testing error logs
+# error=/projects/0/vusr0599/dl-prs/logs/ukb_doug_logs/01_TEST_clump_clean.e.txt
+# output=/projects/0/vusr0599/dl-prs/logs/ukb_doug_logs/01_TEST_clump_clean.o.txt
+
+echo 'start of job'
+
+echo "loading modules"
+module load 2023
+module load R/4.3.2-gfbf-2023a
+
+# export path to libraries
+export R_LIBS_USER=/home/nbell/R/x86_64-pc-linux-gnu-library/4.3
+
+# input arguments
+# ADD_STATS="/projects/0/vusr0599/dl-prs/data/ukb_doug/results/clean/log_Alanine_aminotransferase_Discovery_linear_Results_CLEAN.txt"
+# DEV_STATS="/projects/0/vusr0599/dl-prs/data/ukb_doug/results/clean/log_Alanine_aminotransferase_Discovery_genotypic_Results_CLEAN.txt"
+# PHENO_NAME="log_Alanine_aminotransferase"
+ADD_STATS=$1
+DEV_STATS=$2
+PHENO_NAME=$3
+
+echo "setting file paths"
+
+# hard coded parameters & file paths
+CODE="/projects/0/vusr0599/dl-prs/code/ukb_doug_code"
+DATA_DIR="/projects/0/vusr0599/dl-prs/data/ukb_doug"
+CLUMP_OUT="/projects/0/vusr0599/dl-prs/data/ukb_doug/clump"
+SNP_OUT="/projects/0/vusr0599/dl-prs/data/ukb_doug/snp_data"
+EXPO_OUT="/projects/0/vusr0599/dl-prs/data/ukb_doug/export"
+READY_OUT="/projects/0/vusr0599/dl-prs/data/ukb_doug/ready"
+BFILE="/home/ctgukbio/ctgukbio_prjs1606/datasets/ukbio/applicationID1640/qc/final/genotypes/release2b/EUR/unrel_EUR/unrel_EUR"
+CLUMP_P1=0.000001
+CLUMP_P2=0.0001
+CLUMP_R2=0.2
+CLUMP_KB=250
+
+echo "creating out file names"
+ADD_OUT="${CLUMP_OUT}/${PHENO_NAME}_ADD"
+DEV_OUT="${CLUMP_OUT}/${PHENO_NAME}_DOMDEV"
+
+echo "creating file path for UKB IDs"
+CLEAN_NAME=$(echo "$PHENO_NAME" | sed 's/^int_//')
+IDS="/projects/0/vusr0599/dl-prs/data/ukb_doug/ids/${CLEAN_NAME}_ids.txt"
+
+echo ""
+echo "file names and paths:"
+echo "ADD_STATS: $ADD_STATS"
+echo "DEV_STATS: $DEV_STATS"
+echo "PHENO_NAME: $PHENO_NAME"
+echo "ADD_OUT: $ADD_OUT"
+echo "DEV_OUT: $DEV_OUT"
+echo ""
+
+echo "starting analysis"
+
+if [[ -f "${ADD_OUT}.clumped" ]]; then
+    echo "Additive clumping output exists for ${PHENO_NAME}, skipping."
+else
+    echo "running clumping for additive results"
+    echo ""
+    /home/nbell/programs/plink1.9/plink --bfile "${BFILE}" \
+    --clump "$ADD_STATS" \
+    --clump-snp-field ID \
+    --clump-field P \
+    --clump-p1 "$CLUMP_P1" \
+    --clump-p2 "$CLUMP_P2" \
+    --clump-r2 "$CLUMP_R2" \
+    --clump-kb "$CLUMP_KB" \
+    --out "$ADD_OUT"
+
+    echo ""
+    echo "clumping done"
+    echo "checking if additive clumping was successful"
+    if [[ ! -f "${ADD_OUT}.clumped" ]]; then
+        echo "clumping failed. exiting."
+        exit 1
+    fi
+    echo "clumping was successful."
+    num_rows=$(tail -n +2 "${ADD_OUT}.clumped" | wc -l)
+    echo "Number of lead SNPs in additive clumping for ${PHENO_NAME}: ${num_rows}"
+fi
+
+if [[ -f "${DEV_OUT}.clumped" ]]; then
+    echo ""
+    echo "Dev clumping output exists for ${PHENO_NAME}, skipping."
+else
+    echo ""
+    echo "running clumping for domdev results"
+    /home/nbell/programs/plink1.9/plink --bfile "${BFILE}" \
+    --clump "$DEV_STATS" \
+    --clump-snp-field ID \
+    --clump-field P \
+    --clump-p1 "$CLUMP_P1" \
+    --clump-p2 "$CLUMP_P2" \
+    --clump-r2 "$CLUMP_R2" \
+    --clump-kb "$CLUMP_KB" \
+    --out "$DEV_OUT"
+
+    echo ""
+    echo "clumping done"
+    echo "checking if dev clumping was successful"
+    if [[ ! -f "${DEV_OUT}.clumped" ]]; then
+        echo "clumping failed. exiting."
+        exit 1
+    fi
+    echo "clumping was successful."
+    num_rows=$(tail -n +2 "${DEV_OUT}.clumped" | wc -l)
+    echo "Number of lead SNPs in dev clumping for ${PHENO_NAME}: ${num_rows}"
+fi
+
+echo ""
+echo "checking if cleaned SNP files exist."
+if [[ -f "${SNP_OUT}/${PHENO_NAME}.export.txt" && -f "${SNP_OUT}/${PHENO_NAME}_snps.RData" ]]; then
+    echo "SNP files already exist for ${PHENO_NAME}, skipping."
+else
+    echo ""
+    echo "One or both SNP files do not exist for ${PHENO_NAME}, proceeding..."
+    echo "cleaning clumping results for ${PHENO_NAME}"
+    # run R script 
+    Rscript ${CODE}/01_clean_clumps.R \
+    "${ADD_OUT}.clumped" \
+    "${DEV_OUT}.clumped" \
+    "${ADD_STATS}" \
+    "${DEV_STATS}" \
+    "${PHENO_NAME}" \
+    "${SNP_OUT}" 
+
+    echo "checking if cleaning was successful."
+    if [[ ! -f "${SNP_OUT}/${PHENO_NAME}.export.txt" || ! -f "${SNP_OUT}/${PHENO_NAME}_snps.RData" ]]; then
+        echo "cleaning failed. exiting."
+        exit 1
+    fi
+    echo "cleaning was successful."
+    echo ""
+
+fi
+
+echo ""
+echo "checking if export files exist."
+if [[ -f "${EXPO_OUT}/${PHENO_NAME}_clumped.raw" ]]; then
+    echo ""
+    echo "Genotype file exists for ${PHENO_NAME}, skipping."
+else
+    echo ""
+    echo "running export for ${PHENO_NAME}"
+    /home/nbell/programs/plink2.0/plink2 --bfile "${BFILE}" \
+    --keep "${IDS}" \
+    --extract ${SNP_OUT}/${PHENO_NAME}.export.txt \
+    --export A \
+    --export-allele ${SNP_OUT}/${PHENO_NAME}.export.txt \
+    --out "${EXPO_OUT}/${PHENO_NAME}_clumped"
+
+    echo ""
+    echo "exporting done"
+    echo "checking if exporting was successful"
+    if [[ ! -f "${EXPO_OUT}/${PHENO_NAME}_clumped.raw" ]]; then
+        echo "exporting failed. exiting."
+        exit 1
+    fi
+    echo "exporting was successful."
+    
+fi
+
+# define COVAR file
+echo ""
+COVAR="${DATA_DIR}/results/Replication_${CLEAN_NAME}_PhenoCovar.txt"
+# check if covar file exists
+if [[ ! -f "${COVAR}" ]]; then
+    echo "Covariate file does not exist for ${PHENO_NAME}, exiting."
+    exit 1
+fi
+echo "Covariate file exists for ${PHENO_NAME}, proceeding."
+
+# define DOMDEV stats for scoring file
+echo ""
+DEV_STATS_SCORE="${DATA_DIR}/results/clean/for_scoring/${PHENO_NAME}_Discovery_genotypic_Results_CLEAN_SCORING.txt"
+# check if dev stats for scoring file exists
+if [[ ! -f "${DEV_STATS_SCORE}" ]]; then
+    echo "Dev stats for scoring file does not exist for ${PHENO_NAME}, exiting."
+    exit 1
+fi
+echo "Dev stats for scoring file exists for ${PHENO_NAME}, proceeding."
+
+echo ""
+echo "checking if prepared data files exist."
+if [[ -f "${READY_OUT}/DATA_${PHENO_NAME}.txt" ]]; then
+    echo ""
+    echo "Data is already prepared for ${PHENO_NAME}, skipping."
+else
+    echo ""
+    echo "All files are ready for final data preparation."
+    echo "Formatting final data for ${PHENO_NAME}..."
+    # run R script
+    Rscript ${CODE}/01b_ready_data_UKB.R \
+    "${COVAR}" \
+    "${EXPO_OUT}/${PHENO_NAME}_clumped.raw" \
+    "${SNP_OUT}/${PHENO_NAME}_snps.RData" \
+    "${ADD_STATS}" \
+    "${DEV_STATS_SCORE}" \
+    "${READY_OUT}" \
+    "${PHENO_NAME}"
+
+    echo "checking if data formatting was successful."
+    if [[ ! -f "${READY_OUT}/DATA_${PHENO_NAME}.txt" ]]; then
+        echo "formatting failed. exiting."
+        exit 1
+    fi
+    echo "formatting was successful."
+    echo ""
+fi
+
+echo ""
+echo "Ending processing of ${PHENO_NAME}"
+

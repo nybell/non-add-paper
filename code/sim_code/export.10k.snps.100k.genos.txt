@@ -1,0 +1,21 @@
+#!/bin/bash
+#SBATCH --mem=64GB
+#SBATCH --time=1:00:00
+#SBATCH --error=/projects/0/vusr0599/hapnest/synthetic_data/logs/export.10k.snps.geno.100k.e.txt
+#SBATCH --output=/projects/0/vusr0599/hapnest/synthetic_data/logs/export.10k.snps.geno.100k.o.txt
+
+# input arguments
+PLINK2=/home/nbell/programs/plink2.0
+BFILE=/projects/0/vusr0599/hapnest/synthetic_data/data/outputs/discovery_eur_100k/eur_merged
+EXTRACT=/projects/0/vusr0599/hapnest/synthetic_data/data/causal_snps_dir/extract_10k_snps.txt
+EXPORT=/projects/0/vusr0599/hapnest/synthetic_data/data/causal_snps_dir/export_10k_snps.txt
+OUT_DIR=/projects/0/vusr0599/hapnest/synthetic_data/data/outputs/discovery_eur_100k
+
+echo 'starting export'
+$PLINK2/plink2 --bfile $BFILE \
+--extract $EXTRACT \
+--export A \
+--export-allele $EXPORT \
+--out $OUT_DIR/genos.100k.snps.10k
+
+echo 'done'

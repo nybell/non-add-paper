@@ -1,0 +1,23 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --time=6:00:00
+#SBATCH --cpus-per-task=128
+#SBATCH --error=/projects/0/vusr0599/dl-prs/logs/ukb_doug_logs/ukb_prs_sff.e.txt
+#SBATCH --output=/projects/0/vusr0599/dl-prs/logs/ukb_doug_logs/ukb_prs_sff.o.txt
+
+# load modules
+module load 2023
+module load R/4.3.2-gfbf-2023a
+
+# export path to libraries
+export R_LIBS_USER=/home/nbell/R/x86_64-pc-linux-gnu-library/4.3
+
+# set paths
+CODE=/projects/0/vusr0599/dl-prs/code/ukb_doug_code
+
+# execute code
+$CODE/02_run_prs_UKB.sh
+
+
+

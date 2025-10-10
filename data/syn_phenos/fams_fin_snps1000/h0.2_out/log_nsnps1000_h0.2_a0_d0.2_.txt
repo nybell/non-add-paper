@@ -1,0 +1,6 @@
+[1] "DEV PHENO DEV MODEL - Combined:"
+R-squared: 0.2025849 
+[1] "DEV PHENO DEV MODEL - Sample 1:"
+R-squared: 0.2011018 
+[1] "DEV PHENO DEV MODEL - Sample 2:"
+R-squared: 0.205556 

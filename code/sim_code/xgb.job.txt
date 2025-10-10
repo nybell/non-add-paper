@@ -1,0 +1,31 @@
+#!/bin/bash           
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=9
+#SBATCH --gpus=1
+#SBATCH --partition=gpu_a100   
+#SBATCH --time=10:00:00            
+
+# source miniconda
+source /home/nbell/miniconda3/etc/profile.d/conda.sh
+
+# activate virtual env
+conda activate ml_models
+
+# input args
+CODE=$1
+INPUT=$2
+PKL=$3
+MODELS_DIR=$4
+TRIALS=$5
+
+# make file path
+# mkdir -p "$MODELS_DIR"
+
+# run dnn
+python $CODE/run_xgb.py \
+--input_data $INPUT \
+--result_path $PKL \
+--hyper_trials $TRIALS \
+--gpu
+

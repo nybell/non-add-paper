@@ -1,0 +1,22 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --time=4:00:00
+#SBATCH --error=/projects/0/vusr0599/dl-prs/logs/sim_prs_regressions.e.txt
+#SBATCH --output=/projects/0/vusr0599/dl-prs/logs/sim_prs_regressions.o.txt
+
+# load modules
+module load 2023
+module load R/4.3.2-gfbf-2023a
+
+# export path to libraries
+export R_LIBS_USER=/home/nbell/R/x86_64-pc-linux-gnu-library/4.3
+
+# set paths
+CODE=/projects/0/vusr0599/dl-prs/code
+
+# execute code
+$CODE/04_run_prs_regressions_ss.sh
+
+
+

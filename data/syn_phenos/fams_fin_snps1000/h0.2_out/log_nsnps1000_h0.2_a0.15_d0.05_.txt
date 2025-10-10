@@ -1,0 +1,18 @@
+[1] "MIXED PHENO FULL MODEL - Combined:"
+R-squared: 0.2013146 
+[1] "MIXED PHENO ADD MODEL - Combined:"
+R-squared: 0.1510107 
+[1] "MIXED PHENO DEV MODEL - Combined:"
+R-squared: 0.05080824 
+[1] "MIXED PHENO FULL MODEL - Sample 1:"
+R-squared: 0.2024966 
+[1] "MIXED PHENO ADD MODEL - Sample 1:"
+R-squared: 0.1512579 
+[1] "MIXED PHENO DEV MODEL - Sample 1:"
+R-squared: 0.05220455 
+[1] "MIXED PHENO FULL MODEL - Sample 2:"
+R-squared: 0.1989791 
+[1] "MIXED PHENO ADD MODEL - Sample 2:"
+R-squared: 0.1505216 
+[1] "MIXED PHENO DEV MODEL - Sample 2:"
+R-squared: 0.04806387 

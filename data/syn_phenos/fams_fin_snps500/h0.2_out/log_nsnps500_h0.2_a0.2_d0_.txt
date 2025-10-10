@@ -1,0 +1,6 @@
+[1] "ADD PHENO ADD MODEL - Combined:"
+R-squared: 0.2031609 
+[1] "ADD PHENO ADD MODEL - Sample 1:"
+R-squared: 0.2034061 
+[1] "ADD PHENO ADD MODEL - Sample 2:"
+R-squared: 0.2026781 
