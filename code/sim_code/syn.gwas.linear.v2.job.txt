@@ -1,0 +1,35 @@
+#!/bin/bash
+#SBATCH --mem=112GB
+#SBATCH --time=8:00:00
+#SBATCH --array=1-22
+
+echo 'start of job. loading modules'
+PLINK2=/home/nbell/programs/plink2.0
+
+# define chromosome variable
+chr=$SLURM_ARRAY_TASK_ID
+
+# define base path & file name prefix
+base_path=$1
+prefix=$2
+pheno=$3
+gdir=$4
+
+# check if the output exists
+if [[ -d $base_path/$gdir ]]; then
+    echo "output directory already exists"
+else
+    echo "making output directory"
+    mkdir $base_path/$gdir
+fi
+
+# run plink2 pca
+$PLINK2/plink2 --pgen $base_path/$prefix-$chr.bed \
+--pvar $base_path/$prefix-$chr.bim \
+--psam $pheno \
+--glm hide-covar \
+--covar $base_path/pca_out/$prefix-$chr.eigenvec \
+--threads 16 \
+--out $base_path/$gdir/$prefix-$chr
+
+
