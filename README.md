@@ -61,5 +61,34 @@ $DL/06_submit_xgb.sh
 
 Run scripts 07 and onward manually to create figures.
 
+### Testing single phenotypes
+To test models in a single phenotype, adjust and run the code below. ML/DL-ready data files are available in the Zenodo repo listed above. 
 
+```
+DATA=/path/to/data
+CODE=/path/to/script
+OUT=/path/to/output
+
+# Test on single pheno - DNN
+python $CODE/run_dnn.py \
+--input_data $DATA/DATA_eur_nsnps100_h0.5_a0_d0.5_50k.txt \
+--result_path $OUT/dnn_result.pkl \
+--model_path $OUT/dnn_models \
+--epochs 50 \
+--writer /test
+
+# Test on single pheno - XGB
+python $CODE/run_xgb.py \
+--input_data $DATA/DATA_eur_nsnps100_h0.5_a0_d0.5_50k.txt \
+--result_path $OUT/xgb_result.pkl \
+--model_path $OUT/xgb_models.pkl \
+--max_depth 1 \
+--learning_rate 0.01 0.3 
+
+# Test polygenic scores on single pheno
+# NOTE: Need to edit directory path 04_prs_regressions_ss.R (line 18)
+Rscript "$CODE/04_prs_regressions_ss.R" \
+    /path/to/DATA_eur_nsnps100_h0.5_a0_d0.5_50k.txt \
+    /path/to/output/ \
+```
 
