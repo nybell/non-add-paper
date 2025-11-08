@@ -4,6 +4,9 @@ DOI: https://doi.org/10.1101/2025.10.10.25337750
 
 Repository contains code, data (simulated phenotypes), and results (from analyses using simulated phenotypes) from the pre print listed above. Code is run script by script (to confirm successful execution) and is mixed between running on a local PC (Mac Silicon) and an HPC (Snellius). UK Biobank data can be accessed on their platform for approved researchers (https://www.ukbiobank.ac.uk/use-our-data/research-analysis-platform/). The Python package versions used can be found in the '/code/required_packages_...txt' files.
 
+Raw simulated genotype data, UK Biobank GWAS summary statistics, and data files processed for ML/DL models can be found at:
+https://zenodo.org/records/17552313
+
 #### Generate simulated phenotypes (local)
 Executable R scripts that generate synthetic phenotypes, PLINK .fam files, and performs QC checks. Need a config file defining phenotype parameters (see '/data/fams_fin_snps100/sim.fin.config.snps100.csv' for example).  
 ```
