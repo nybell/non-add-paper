@@ -26,7 +26,7 @@ pip install -r /non-add-paper/code/required_packages_local.txt
 ```
 
 ### Snellius HPC
-Directions for setting up environment on HPC (Est. time = 5 - 10 minutes).
+Directions for setting up environment on HPC (Est. time = 5 - 10 minutes).      
 If Miniconda is not installed (more information here: https://www.anaconda.com/docs/getting-started/miniconda/install#linux-terminal-installer)
 ```
 cd $HOME
