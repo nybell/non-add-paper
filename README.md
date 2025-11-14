@@ -8,7 +8,12 @@ This repository contains code, configuration files, data (simulated phenotypes),
 The project evaluates how dominance deviations impact polygenic score (PGS) performance, and compares linear models using PGSs to XGboost and a neural network using both simulated data and real-data from the UK Biobank. All code and simulated phenotype files for the simulated analyses can be found in this repo. UK Biobank data can be accessed on their platform for approved researchers (https://www.ukbiobank.ac.uk/use-our-data/research-analysis-platform/).
 
 Complete data for the project (raw genotypes + data prepared for ML/DL models) and UK Biobank summary statistics:     
-https://zenodo.org/records/17552313
+https://zenodo.org/records/17552313     
+
+## Software & Hardware
+Local code was run on a 2021 MacBook Pro M1 Max Silicon (32GB RAM). HPC code was run on the Dutch Snellius computer, with the ML/DL models using a single NVIDIA A100 GPU.      
+
+GWASs were run using PLINK v2.00a6LM 64-bit Intel (18 Apr 2024), which can be found here: https://www.cog-genomics.org/plink/2.0/       
 
 ## Environments Setup
 
@@ -47,7 +52,7 @@ conda env create -f /non-add-paper/code/non-add-pgs-hpc-env.yml
 conda activate ml_models
 ```
 
-### Worflow Summary
+### Worflow Summary    
 (1) Simulate phenotypes and PLINK .fam files (LOCAL)
 - 01a_pheno_sim*.R
 - 01b_devs_pheno_sim*.R
