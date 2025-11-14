@@ -7,7 +7,7 @@ Repository contains code, data (simulated phenotypes), and results (from analyse
 Raw simulated genotype data, UK Biobank GWAS summary statistics, and data files processed for ML/DL models can be found at: 
 https://zenodo.org/records/17552313
 
-#### Setup (local)
+#### Setup (local; < 5 minutes)
 Code to set up virtual environment with package versions used for local code (MacOS). 
 ```
 brew install pyenv pyenv-virtualenv
@@ -17,7 +17,7 @@ pyenv activate myenv-3.10
 pip install -r /non-add-paper/code/required_packages_local.txt
 ```
 
-#### Setup (HPC)
+#### Setup (HPC; < 10 minutes)
 (1) If needed, install miniconda. More information for installing miniconda can be found here:
 https://www.anaconda.com/docs/getting-started/miniconda/install#linux-terminal-installer 
 ```
