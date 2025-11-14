@@ -2,13 +2,13 @@
 
 DOI: https://doi.org/10.1101/2025.10.10.25337750
 
-Repository contains code, data (simulated phenotypes), and results (from analyses using simulated phenotypes) from the pre print listed above. Code is run script by script (to confirm successful execution) and is mixed between running on a local PC (Mac Silicon M1 Pro) and an HPC (Snellius). UK Biobank data can be accessed on their platform for approved researchers (https://www.ukbiobank.ac.uk/use-our-data/research-analysis-platform/). The Python package versions used can be found in the '/code/required_packages_...txt' files.
+Repository contains code, data (simulated phenotypes), and results (from analyses using simulated phenotypes) from the pre print listed above. Code is run script by script (to confirm successful execution) and is mixed between running on a local PC (Mac Silicon M1 Pro; MacOS Sonoma 14.5) and an HPC (Snellius). UK Biobank data can be accessed on their platform for approved researchers (https://www.ukbiobank.ac.uk/use-our-data/research-analysis-platform/). The Python package versions used can be found in the '/code/required_packages_...txt' files.
 
 Raw simulated genotype data, UK Biobank GWAS summary statistics, and data files processed for ML/DL models can be found at: 
 https://zenodo.org/records/17552313
 
 #### Setup (local)
-Code to set up virtual environment with package versions used for local code. 
+Code to set up virtual environment with package versions used for local code (MacOS). 
 ```
 brew install pyenv pyenv-virtualenv
 pyenv install 3.10.12
@@ -17,6 +17,26 @@ pyenv activate myenv-3.10
 pip install -r /path/to/required_packages_local.txt
 ```
 
+#### Setup (HPC)
+(1) If needed, install miniconda. More information for installing miniconda can be found here:
+https://www.anaconda.com/docs/getting-started/miniconda/install#linux-terminal-installer 
+```
+cd $HOME
+https://www.anaconda.com/docs/getting-started/miniconda/install#linux-terminal-installer    # download miniconda
+bash miniconda.sh -b -p $HOME/miniconda3                                                    # run installer
+source $HOME/miniconda3/etc/profile.d/conda.sh                                              # source & init
+conda init bash
+```
+If needed, logout and re-login to your HPC environment and run:
+```
+source ~/.bashrc
+```
+
+(2) Create virtual environment with dependencies
+```
+source $HOME/miniconda3/etc/profile.d/conda.sh
+conda env create -f /path/to/non-add-pgs-hpc-env.yml
+```
 
 #### Generate simulated phenotypes (local)
 Executable R scripts that generate synthetic phenotypes, PLINK .fam files, and performs QC checks. Need a config file defining phenotype parameters (see '/data/fams_fin_snps100/sim.fin.config.snps100.csv' for example).  
@@ -54,7 +74,7 @@ $HAP/02a_merge_all_sumstats.sh
 ```
 
 #### Prepare data for models (clean, compute PGSs, format for ML/DL)
-Slurm job for cleaning and preping data for models. The 'dnn.sh' and 'xgb.sh' are run using a single NVIDIA A100 GPU. 
+Slurm job for cleaning and preping data for models. The 'dnn.job.txt' and 'xgb.job.txt' are run using a single NVIDIA A100 GPU. 
 ```
 # submit ready data job (HPC)
 sbatch 03_ready.data.ss.job.txt
