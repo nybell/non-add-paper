@@ -48,7 +48,7 @@ conda activate ml_models
 ```
 
 ### Worflow Summary
-(1) Simulated phenotypes and PLINK .fam files (LOCAL)
+(1) Simulate phenotypes and PLINK .fam files (LOCAL)
 - 01a_pheno_sim*.R
 - 01b_devs_pheno_sim*.R
 
@@ -72,13 +72,13 @@ conda activate ml_models
 - xgb.job.txt
 - 06_submit_xgb.sh
 
-(7+) Visualization & figures
+(7+) Visualization & figures     
 
-Notes:
+Notes:     
 (a) Local simulated phenotype generation will generate PLINK .fam files and a corresponding "nsnp_*.RData" file. These need to be moved to the HPC and put in the "$FAM_NSNPS" directories in order to run the GWASs.       
 (b) GWASs are run with PLINK2, with one SLURM array job submitted per phenotype.      
 (c) The 05 and 06 scripts submit one SLURM job per phenotype.       
-(d) _The filepaths in the code have **not** been altered! If running the full pipeline, you will need to adjust to your own system. As an alternative, a test jupyter notebooks + R script can be found to run the XGBoost, and NN models locally._ 
+(d) _The filepaths in the code have **not** been altered! If running the full pipeline, you will need to adjust to your own system. As an alternative, a test jupyter notebooks + R script can be found to run the XGBoost, and NN models locally._      
 
 ### Full pipeline
 Code as run for project. 
