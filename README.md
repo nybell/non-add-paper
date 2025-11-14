@@ -1,25 +1,34 @@
-# Repository for "Benchmarking non-additive genetic effects on polygenic prediction and machine learning-based approaches"
+# Benchmarking non-additive genetic effects on polygenic prediction and machine learning-based approaches
 
 DOI: https://doi.org/10.1101/2025.10.10.25337750
 
-Repository contains code, data (simulated phenotypes), and results (from analyses using simulated phenotypes) from the pre print listed above. Code is run script by script (to confirm successful execution) and is mixed between running on a local PC (Mac Silicon M1 Pro; MacOS Sonoma 14.5) and an HPC (Snellius). UK Biobank data can be accessed on their platform for approved researchers (https://www.ukbiobank.ac.uk/use-our-data/research-analysis-platform/). The Python package versions used can be found in the '/code/required_packages_...txt' files.
+This repository contains code, configuration files, data (simulated phenotypes), and results (from simulation analyses) from the manuscript "Benchmarking non-additive genetic effects on polygenic prediction and machine learning-based approaches". 
 
-Raw simulated genotype data, UK Biobank GWAS summary statistics, and data files processed for ML/DL models can be found at: 
+## Overview
+The project evaluates how dominance deviations impact polygenic score (PGS) performance, and compares linear models using PGSs to XGboost and a neural network using both simulated data and real-data from the UK Biobank. All code and simulated phenotype files for the simulated analyses can be found in this repo. UK Biobank data can be accessed on their platform for approved researchers (https://www.ukbiobank.ac.uk/use-our-data/research-analysis-platform/).
+
+Complete data for the project (raw genotypes + data prepared for ML/DL models) and UK Biobank summary statistics:     
 https://zenodo.org/records/17552313
 
-#### Setup (local; < 5 minutes)
-Code to set up virtual environment with package versions used for local code (MacOS). 
+## Environments Setup
+
+### Local (MacOS M1 Pro; Sonoma 14.5)
+Code to set up virtual environment with package versions used for local code (MacOS; Est. time < 5 - 10 minutes). 
 ```
+# if pyenv is not installed
 brew install pyenv pyenv-virtualenv
 pyenv install 3.10.12
+
+# if pyenv is installed, start here
 pyenv virtualenv 3.10.12 myenv-3.10
 pyenv activate myenv-3.10
 pip install -r /non-add-paper/code/required_packages_local.txt
 ```
 
-#### Setup (HPC; < 10 minutes)
-(1) If needed, install miniconda. More information for installing miniconda can be found here:
-https://www.anaconda.com/docs/getting-started/miniconda/install#linux-terminal-installer 
+### Snellius HPC
+Directions for setting up environment on HPC (Est. time = 5 - 10 minutes).
+
+If Miniconda is not installed (more information here: https://www.anaconda.com/docs/getting-started/miniconda/install#linux-terminal-installer)
 ```
 cd $HOME
 https://www.anaconda.com/docs/getting-started/miniconda/install#linux-terminal-installer    # download miniconda
@@ -32,14 +41,51 @@ If needed, logout and re-login to your HPC environment and run:
 source ~/.bashrc
 ```
 
-(2) Create virtual environment with dependencies
+Create virtual environment with dependencies
 ```
 source $HOME/miniconda3/etc/profile.d/conda.sh
 conda env create -f /non-add-paper/code/non-add-pgs-hpc-env.yml
+conda activate ml_models
 ```
 
+### Worflow Summary
+(1) Simulated phenotypes and PLINK .fam files (LOCAL)
+- 01a_pheno_sim*.R
+- 01b_devs_pheno_sim*.R
+
+(2) Run additive and dominance GWAS (per chrom) and merge (HPC)
+- 02_run_linear_gwas.sh
+- syn.gwas.linear.v2.job.txt
+- 02_run_domdev_gwas.sh
+- syn.gwas.geno.v2.job.txt
+- 02a_merge_all_sumstats.sh
+
+(3) QC + compute PGSs + data formatted for model input (HPC)
+- 03_ready.data.ss.job.txt
+
+(4) Run PGS regressions
+- 04_run.prs.regressions.ss.job.txt
+
+(5 & 6) Run XGBoost and neural network models
+- model_definition.py 
+- dnn.job.txt
+- 5_submit_dnn.sh
+- xgb.job.txt
+- 06_submit_xgb.sh
+
+(7+) Visualization & figures
+
+Notes:
+(a) Local simulated phenotype generation will generate PLINK .fam files and a corresponding "nsnp_*.RData" file. These need to be moved to the HPC and put in the "$FAM_NSNPS" directories in order to run the GWASs.       
+(b) GWASs are run with PLINK2, with one SLURM array job submitted per phenotype.      
+(c) The 05 and 06 scripts submit one SLURM job per phenotype.       
+(d) _The filepaths in the code have **not** been altered! If running the full pipeline, you will need to adjust to your own system. As an alternative, a test jupyter notebooks + R script can be found to run the XGBoost, and NN models locally._ 
+
+### Full pipeline
+Code as run for project. 
+
 #### Generate simulated phenotypes (local)
-Executable R scripts that generate synthetic phenotypes, PLINK .fam files, and performs QC checks. Need a config file defining phenotype parameters (see '/data/fams_fin_snps100/sim.fin.config.snps100.csv' for example).  
+Executable R scripts that generate synthetic phenotypes, PLINK .fam files, and performs QC checks. Need a config file defining phenotype parameters (see '/data/fams_fin_snps100/sim.fin.config.snps100.csv' for example). Move the output files to the $FAM_NSNPS directories on the HPC to run GWASs in the next step. 
 ```
 # phenotypes with 100 causal SNPs (Fig. 2)
 Rscript $CODE/01a_pheno_sim_snps100.R
