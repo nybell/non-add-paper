@@ -14,7 +14,7 @@ brew install pyenv pyenv-virtualenv
 pyenv install 3.10.12
 pyenv virtualenv 3.10.12 myenv-3.10
 pyenv activate myenv-3.10
-pip install -r /path/to/required_packages_local.txt
+pip install -r /non-add-paper/code/required_packages_local.txt
 ```
 
 #### Setup (HPC)
@@ -35,7 +35,7 @@ source ~/.bashrc
 (2) Create virtual environment with dependencies
 ```
 source $HOME/miniconda3/etc/profile.d/conda.sh
-conda env create -f /path/to/non-add-pgs-hpc-env.yml
+conda env create -f /non-add-paper/code/non-add-pgs-hpc-env.yml
 ```
 
 #### Generate simulated phenotypes (local)
