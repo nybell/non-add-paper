@@ -88,9 +88,9 @@ Notes:
 ### Re-create figures
 
 To recreate figures, you can use the following scripts:
-- 07a.concat.result.files.ipynb
-- 07b-figure2.R
-- 07c-figure3.R
+- `07a.concat.result.files.ipynb`
+- `07b-figure2.R`
+- `07c-figure3.R`
 
 The first script collates all the result files from all the model runs (synthetic phenotypes) into two tables for plotting. These can be found at:
 - `/data/fig_data/fig2_data_aug2025.xlsx`
@@ -98,14 +98,33 @@ The first script collates all the result files from all the model runs (syntheti
 
 These two tables are used in the two R scripts to create Figure 2A/B and Figure 3B.     
 
-### Demo run
+### Demo models (local)
 
-If you do not want to / do not have access to an HPC, you can run a demo of the models used on your local machine. The 
+If you do not have access to an HPC environment, or if you simply want to explore the core modelling framework used in the manuscript, you can run a lightweight demo locally.     
 
+A full demo dataset is provided in:     
+- `/data/demo_data/`
 
+Demo model scripts (R, Python) are provided in:     
+- `/code/demo_code/`
 
+This includes:
+- one simulated phenotype (`DATA_eur_nsnps100_h0.5_a0_d0.5_50k.txt`) with 100 causal SNPs, total SNP heritability = 50%, and all causal SNPs having a dominance deviation ratio of k = -0.5
+- Published result files for each prediction model (ADD PGS, DOM PGS, XGBoost, neural network)
 
-### Full pipeline
+#### Running the demos
+
+You can plug the demo dataset into any of the following scripts to test the exact modelling pipeline used in the paper:     
+ 
+Polygenic score models (ADD + DOMDEV)     
+- `demo.pgs.regressions.R`     
+- `demo.pgss.html` (R Markdown HTML version)     
+
+Machine learning models     
+- `dnn.demo.ipynb` – neural network     
+- `xgb.demo.ipynb` – XGBoost regression model     
+
+### Running the full pipeline
 Code as run for project. 
 
 #### Generate simulated phenotypes (local)
@@ -164,35 +183,4 @@ $DL/06_submit_xgb.sh
 ```
 
 Run scripts 07 and onward manually to create figures.
-
-### Testing single phenotypes
-To test models in a single phenotype, adjust and run the code below. ML/DL-ready data files are available in the Zenodo repo listed above. 
-
-```
-DATA=/path/to/data
-CODE=/path/to/script
-OUT=/path/to/output
-
-# Test on single pheno - DNN
-python $CODE/run_dnn.py \
---input_data $DATA/DATA_eur_nsnps100_h0.5_a0_d0.5_50k.txt \
---result_path $OUT/dnn_result.pkl \
---model_path $OUT/dnn_models \
---epochs 50 \
---writer /test
-
-# Test on single pheno - XGB
-python $CODE/run_xgb.py \
---input_data $DATA/DATA_eur_nsnps100_h0.5_a0_d0.5_50k.txt \
---result_path $OUT/xgb_result.pkl \
---model_path $OUT/xgb_models.pkl \
---max_depth 1 \
---learning_rate 0.01 0.3 
-
-# Test polygenic scores on single pheno
-# NOTE: Need to edit directory path 04_prs_regressions_ss.R (line 18)
-Rscript "$CODE/04_prs_regressions_ss.R" \
-    /path/to/DATA_eur_nsnps100_h0.5_a0_d0.5_50k.txt \
-    /path/to/output/ \
-```
 
