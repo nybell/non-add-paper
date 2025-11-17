@@ -105,17 +105,17 @@ If you do not have access to an HPC environment, or if you simply want to explor
 A full demo dataset is provided in:     
 - `/data/demo_data/`
 
-Demo model scripts (R, Python) are provided in:     
-- `/code/demo_code/`
-
 This includes:
 - one simulated phenotype (`DATA_eur_nsnps100_h0.5_a0_d0.5_50k.txt`) with 100 causal SNPs, total SNP heritability = 50%, and all causal SNPs having a dominance deviation ratio of k = -0.5
 - Published result files for each prediction model (ADD PGS, DOM PGS, XGBoost, neural network)
 
 #### Running the demos
 
-You can plug the demo dataset into any of the following scripts to test the exact modelling pipeline used in the paper:     
- 
+You can plug the demo dataset into any of the following scripts to test the exact modelling pipeline used in the paper.      
+
+Demo model scripts (R, Python) are provided in:     
+- `/code/demo_code/`
+
 Polygenic score models (ADD + DOMDEV)     
 - `demo.pgs.regressions.R`     
 - `demo.pgss.html` (R Markdown HTML version)     
