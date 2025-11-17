@@ -10,6 +10,8 @@ The project evaluates how dominance deviations impact polygenic score (PGS) perf
 Complete data for the project (raw genotypes + data prepared for ML/DL models) and UK Biobank summary statistics:     
 https://zenodo.org/records/17552313     
 
+__________________
+
 ## Software & Hardware
 Local code was run on a 2021 MacBook Pro M1 Max Silicon (32GB RAM). HPC code was run on the Dutch Snellius computer, with the ML/DL models using a single NVIDIA A100 GPU.      
 
@@ -51,6 +53,7 @@ source $HOME/miniconda3/etc/profile.d/conda.sh
 conda env create -f /non-add-paper/code/non-add-pgs-hpc-env.yml
 conda activate ml_models
 ```
+__________________
 
 ### Worflow Summary    
 (1) Simulate phenotypes and PLINK .fam files (LOCAL)
@@ -84,6 +87,8 @@ Notes:
 (b) GWASs are run with PLINK2, with one SLURM array job submitted per phenotype.      
 (c) The 05 and 06 scripts submit one SLURM job per phenotype.       
 (d) **The filepaths in the code have _not_ been altered! If running the full pipeline, you will need to adjust to your own system. As an alternative, a test jupyter notebooks + R script can be found to run the XGBoost, and NN models locally.**       
+
+__________________
       
 ### Re-create figures
 
@@ -97,6 +102,8 @@ The first script collates all the result files from all the model runs (syntheti
 - `/data/fig_data/fig3b_data_aug2025.xlsx`
 
 These two tables are used in the two R scripts to create Figure 2A/B and Figure 3B.     
+
+__________________
 
 ### Demo models (local)
 
@@ -123,6 +130,8 @@ Polygenic score models (ADD + DOMDEV)
 Machine learning models     
 - `dnn.demo.ipynb` – neural network     
 - `xgb.demo.ipynb` – XGBoost regression model     
+
+__________________
 
 ### Running the full pipeline
 Code as run for project. 
