@@ -97,7 +97,7 @@ To recreate figures, you can use the following scripts:
 - `07b-figure2.R`
 - `07c-figure3.R`
 
-The first script collates all the result files from all the model runs (synthetic phenotypes) into two tables for plotting. These can be found at:
+The first script collates all the result files (found in `/results/model_out/` from all the model runs (synthetic phenotypes) into two tables for plotting. These can be found at:
 - `/data/fig_data/fig2_data_aug2025.xlsx`
 - `/data/fig_data/fig3b_data_aug2025.xlsx`
 
