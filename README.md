@@ -86,7 +86,7 @@ Notes:
 (a) Local simulated phenotype generation will generate PLINK .fam files and a corresponding "nsnp_*.RData" file. These need to be moved to the HPC and put in the "$FAM_NSNPS" directories in order to run the GWASs.       
 (b) GWASs are run with PLINK2, with one SLURM array job submitted per phenotype.      
 (c) The 05 and 06 scripts submit one SLURM job per phenotype.       
-(d) **The filepaths in the code have _not_ been altered! If running the full pipeline, you will need to adjust to your own system. As an alternative, demo jupyter notebooks + R scripts can be used to run the XGBoost, and NN models locally.**       
+(d) **The filepaths in the code have _not_ been altered! If running the full pipeline, you will need to adjust to your own system. As an alternative, demo jupyter notebooks + R scripts can be used to run the PGS regressions, XGBoost, and NN models locally.**       
 
 __________________
       
